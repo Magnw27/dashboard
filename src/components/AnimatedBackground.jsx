@@ -1,10 +1,11 @@
 import { motion } from 'framer-motion';
+import backgroundUrl from '../../assets/background.webp';
 
 export function AnimatedBackground() {
   return (
     <div className="background-layer" aria-hidden="true">
       <motion.img
-        src="/assets/background.webp"
+        src={backgroundUrl}
         alt=""
         className="backdrop-image"
         initial={{ scale: 1.08, opacity: 0 }}
