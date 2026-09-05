@@ -57,8 +57,11 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid rgba(
   .shell{width:min(100% - 28px,1220px)}
   .nav{position:sticky;top:8px;width:calc(100% - 16px);margin:8px auto 0;padding:10px 10px;border-radius:16px;gap:7px}
   .brand{gap:7px}.brand-box{width:29px;height:29px;border-radius:9px}.brand-text{font-size:12px;letter-spacing:.06em}
-  .nav-links{display:flex;gap:1px;min-width:0}.nav-links button,.nav-links a{padding:8px 6px;font-size:11px;white-space:nowrap}.nav-links span{display:none}
-  .nav-tool{padding:8px 9px;font-size:10px;white-space:nowrap;flex:0 0 auto}.nav-tool .audio-dot{margin-right:4px}
+  .nav-links{display:flex;gap:1px;min-width:0;align-items:center;height:42px}
+  .nav-links button,.nav-links a{display:inline-flex;align-items:center;justify-content:center;height:42px;padding:0 6px;font-size:11px;line-height:1;white-space:nowrap;vertical-align:middle}
+  .nav-links span{display:none}
+  .nav-tool{display:inline-flex;align-items:center;justify-content:center;height:42px;padding:0 9px;font-size:10px;line-height:1;white-space:nowrap;flex:0 0 auto;margin:0;vertical-align:middle}
+  .nav-tool .audio-dot{margin-right:4px}
   .hero{min-height:auto;display:block;padding-top:92px;padding-bottom:78px}
   .hero-title{margin:18px 0 21px;font-size:clamp(3.2rem,17vw,5.4rem);line-height:.87;letter-spacing:-.075em}
   .hero-description{font-size:15px;line-height:1.65;max-width:100%}
