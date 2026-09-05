@@ -9,10 +9,10 @@
 
 ::selection { background: rgba(255,214,170,.22); color: #fff; }
 
-.backdrop-image { animation: backdropDrift 24s ease-in-out infinite alternate; will-change: transform; }
+.backdrop-image { animation: backdropDrift 24s ease-in-out infinite alternate; will-change: transform; translate: var(--px,0) var(--py,0); }
 .backdrop-grid { animation: gridFloat 32s linear infinite; will-change: background-position; }
 .ambient-orbs { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
-.ambient-orbs i { position: absolute; width: 28vw; min-width: 180px; aspect-ratio: 1; border-radius: 50%; filter: blur(70px); opacity: .11; mix-blend-mode: screen; will-change: transform; }
+.ambient-orbs i { position: absolute; width: 28vw; min-width: 180px; aspect-ratio: 1; border-radius: 50%; filter: blur(70px); opacity: .11; mix-blend-mode: screen; will-change: transform, translate; translate: var(--px,0) var(--py,0); }
 .ambient-orbs i:nth-child(1) { left: -10%; top: 10%; background: #ffd6aa; animation: orb1 20s ease-in-out infinite alternate; }
 .ambient-orbs i:nth-child(2) { right: -12%; top: 35%; background: #86a9ff; animation: orb2 24s ease-in-out infinite alternate; }
 .ambient-orbs i:nth-child(3) { left: 35%; bottom: -18%; background: #b18cff; animation: orb3 22s ease-in-out infinite alternate; }
@@ -21,15 +21,12 @@
 .particle-canvas { position: fixed; inset: 0; z-index: -1; width: 100%; height: 100%; pointer-events: none; opacity: .48; }
 
 .pointer-glow { transition: opacity .25s ease; }
-@media (pointer: fine) {
-  .pointer-glow { opacity: .85; }
-}
+@media (pointer: fine) { .pointer-glow { opacity: .85; } }
 .btn, .nav-tool, .filter { translate: var(--mag-x, 0) var(--mag-y, 0); }
 
 .nav-links a { position: relative; overflow: hidden; }
 .nav-links a::after { content: ""; position: absolute; left: 12px; right: 12px; bottom: 4px; height: 1px; background: var(--accent); transform: scaleX(0); transform-origin: center; transition: transform .4s var(--ease); }
-.nav-links a:hover::after,
-.nav-links a.is-active::after { transform: scaleX(1); }
+.nav-links a:hover::after, .nav-links a.is-active::after { transform: scaleX(1); }
 .nav-links a span { display: inline-block; transition: transform .35s var(--ease); }
 .nav-links a:hover span { transform: translate3d(3px, -3px, 0); }
 
@@ -75,17 +72,8 @@
 @keyframes dot { to { transform: scale(1.15); opacity: 1; } }
 @keyframes sweep { 0%, 55% { left: -35%; } 78%, 100% { left: 125%; } }
 
-@media (max-width: 900px) {
-  .hero { grid-template-columns: 1fr; gap: 42px; }
-  .hero-aside { max-width: none; }
-}
-@media (max-width: 640px) {
-  .ambient-orbs i { filter: blur(55px); opacity: .075; }
-  .particle-canvas { opacity: .25; }
-  .loader-meta { bottom: calc(12vh - 25px); }
-  .project-card { transform: translate3d(0,20px,0) scale(.985); }
-  .project-card.is-visible { transform: translate3d(0,0,0) scale(1); }
-}
+@media (max-width: 900px) { .hero { grid-template-columns: 1fr; gap: 42px; } .hero-aside { max-width: none; } }
+@media (max-width: 640px) { .ambient-orbs i { filter: blur(55px); opacity: .075; } .particle-canvas { opacity: .25; } .loader-meta { bottom: calc(12vh - 25px); } .project-card { transform: translate3d(0,20px,0) scale(.985); } .project-card.is-visible { transform: translate3d(0,0,0) scale(1); } }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
   .pointer-glow, .particle-canvas { display: none; }
