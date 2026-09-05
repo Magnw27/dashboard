@@ -12,6 +12,9 @@ import { usePointerScene } from './hooks/usePointerScene';
 import './styles/app.css';
 import './styles/premium.css';
 
+const AUDIO_SRC = '/assets/suara.mp3';
+const AUDIO_STORAGE_KEY = 'lipzcode-sound-enabled';
+
 export default function App() {
   const [loading, setLoading] = useState(true);
   const [progress, setProgress] = useState(0);
@@ -43,12 +46,17 @@ export default function App() {
     raf = requestAnimationFrame(tick);
     const onScroll = () => setScrolled(window.scrollY > 24);
     window.addEventListener('scroll', onScroll, { passive: true });
-    return () => { cancelAnimationFrame(raf); clearTimeout(timeout); window.removeEventListener('scroll', onScroll); };
+    onScroll();
+    return () => {
+      cancelAnimationFrame(raf);
+      clearTimeout(timeout);
+      window.removeEventListener('scroll', onScroll);
+    };
   }, []);
 
   useEffect(() => {
     const onKey = event => {
-      if (event.key === '/' && document.activeElement?.tagName !== 'INPUT') {
+      if (event.key === '/' && !['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) {
         event.preventDefault();
         document.querySelector('.search-box input')?.focus();
       }
@@ -59,27 +67,59 @@ export default function App() {
 
   useEffect(() => {
     const audio = audioRef.current;
-    if (!audio) return;
+    if (!audio) return undefined;
+
     audio.volume = 0.62;
+    audio.preload = 'auto';
+
     const onError = () => setAudioState('error');
+    const onLoadStart = () => setAudioState(prev => prev === 'on' ? prev : 'loading');
+    const onCanPlay = () => setAudioState(prev => prev === 'on' ? prev : 'off');
     const onPause = () => setAudioState(prev => prev === 'error' ? 'error' : 'off');
     const onPlay = () => setAudioState('on');
+    const onEnded = () => {
+      if (!audio.loop) setAudioState('off');
+    };
+
     audio.addEventListener('error', onError);
+    audio.addEventListener('loadstart', onLoadStart);
+    audio.addEventListener('canplay', onCanPlay);
     audio.addEventListener('pause', onPause);
     audio.addEventListener('play', onPlay);
-    return () => { audio.removeEventListener('error', onError); audio.removeEventListener('pause', onPause); audio.removeEventListener('play', onPlay); };
+    audio.addEventListener('ended', onEnded);
+    audio.load();
+
+    return () => {
+      audio.removeEventListener('error', onError);
+      audio.removeEventListener('loadstart', onLoadStart);
+      audio.removeEventListener('canplay', onCanPlay);
+      audio.removeEventListener('pause', onPause);
+      audio.removeEventListener('play', onPlay);
+      audio.removeEventListener('ended', onEnded);
+    };
   }, []);
 
   const toggleAudio = async () => {
     const audio = audioRef.current;
     if (!audio) return;
+
     try {
       if (audio.paused) {
+        setAudioState('loading');
+        if (audio.error) {
+          audio.src = AUDIO_SRC;
+          audio.load();
+        }
         await audio.play();
+        localStorage.setItem(AUDIO_STORAGE_KEY, '1');
+        setAudioState('on');
       } else {
         audio.pause();
+        localStorage.setItem(AUDIO_STORAGE_KEY, '0');
+        setAudioState('off');
       }
-    } catch {
+    } catch (error) {
+      console.warn('Sound could not start:', error);
       setAudioState('error');
     }
   };
@@ -97,7 +137,7 @@ export default function App() {
         <ProjectsSection projects={projects} />
       </main>
       <Footer />
-      <audio ref={audioRef} preload="auto" loop src="/assets/suara.mp3" />
+      <audio ref={audioRef} preload="auto" loop src={AUDIO_SRC} aria-hidden="true" />
     </>
   );
 }
