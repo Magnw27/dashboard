@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0b0c10">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="LIPZCODE — open-source portfolio and project index.">
+  <title>LIPZCODE — Open Source</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="page-loader" id="pageLoader" aria-hidden="true">
+    <div class="loader-mark">L<span>/</span>C</div>
+    <div class="loader-bar"><span id="loaderBar"></span></div>
+  </div>
+
+  <div class="backdrop" aria-hidden="true">
+    <img src="assets/background.webp" alt="" class="backdrop-image" fetchpriority="high" decoding="async">
+    <div class="backdrop-shade"></div>
+    <div class="backdrop-grid"></div>
+    <div class="backdrop-glow glow-a"></div>
+    <div class="backdrop-glow glow-b"></div>
+  </div>
+
+  <div class="scroll-progress"><span id="scrollProgress"></span></div>
+  <div class="pointer-glow" id="pointerGlow" aria-hidden="true"></div>
+
+  <header class="nav" id="nav">
+    <a href="#top" class="brand" aria-label="LIPZCODE home">
+      <span class="brand-box">L</span>
+      <span class="brand-text">LIPZCODE</span>
+    </a>
+    <nav class="nav-links" aria-label="Navigasi utama">
+      <a href="#about">About</a>
+      <a href="#projects">Projects</a>
+      <a href="https://github.com/Magnw27" target="_blank" rel="noopener noreferrer">GitHub <span>↗</span></a>
+    </nav>
+    <div class="nav-tools">
+      <button class="nav-tool" id="audioToggle" type="button" aria-label="Aktifkan suara" aria-pressed="false">
+        <span class="audio-dot"></span><span id="audioText">Sound</span>
+      </button>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero shell" id="about">
+      <div class="hero-copy">
+        <p class="eyebrow reveal"><span></span> OPEN SOURCE / PERSONAL WORKSPACE</p>
+        <h1 class="hero-title" aria-label="Muhammad Arif Wicaksono">
+          <span class="title-line reveal-word" style="--d:80ms">Muhammad</span>
+          <span class="title-line accent reveal-word" style="--d:170ms">Arif</span>
+          <span class="title-line reveal-word" style="--d:260ms">Wicaksono</span>
+        </h1>
+        <p class="hero-description reveal" style="--d:360ms">A clean index of projects, experiments, and tools — built to be explored, reused, and improved.</p>
+        <div class="hero-actions reveal" style="--d:430ms">
+          <a class="btn btn-primary" href="#projects">Explore projects <span>↓</span></a>
+          <a class="btn btn-ghost" href="https://github.com/Magnw27" target="_blank" rel="noopener noreferrer">GitHub <span>↗</span></a>
+        </div>
+      </div>
+
+      <div class="hero-aside reveal" style="--d:520ms">
+        <div class="aside-index">01 — 04</div>
+        <p>Building interfaces and software with a preference for simple tools, strong fundamentals, and things that feel good to use.</p>
+        <div class="aside-rule"></div>
+        <div class="aside-meta"><span>Based in Indonesia</span><span>Open-source minded</span></div>
+      </div>
+    </section>
+
+    <section class="summary shell reveal" style="--d:100ms">
+      <div class="summary-item"><span>Projects</span><strong id="statTotal">0</strong></div>
+      <div class="summary-item"><span>Languages</span><strong id="statLanguages">0</strong></div>
+      <div class="summary-item"><span>Open source</span><strong id="statOpen">0</strong></div>
+      <div class="summary-item summary-note"><span>Focus</span><strong>Useful things</strong></div>
+    </section>
+
+    <section class="projects shell" id="projects">
+      <div class="section-head reveal">
+        <div>
+          <p class="eyebrow"><span></span> SELECTED WORK</p>
+          <h2>Projects that ship.</h2>
+        </div>
+        <p>Each card opens the repository directly on GitHub.</p>
+      </div>
+
+      <div class="project-tools reveal" style="--d:70ms">
+        <div class="filter-row" id="filters" role="tablist" aria-label="Filter bahasa"></div>
+        <label class="search-box">
+          <span>⌕</span>
+          <input id="searchInput" type="search" placeholder="Search projects" autocomplete="off" spellcheck="false">
+          <kbd>/</kbd>
+        </label>
+      </div>
+
+      <div class="project-grid" id="projectsContainer"></div>
+      <div class="empty hidden" id="emptyState">
+        <strong>No projects found.</strong>
+        <button id="resetFilters" type="button">Reset</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer shell">
+    <span>© 2026 LIPZCODE</span>
+    <a href="https://github.com/Magnw27" target="_blank" rel="noopener noreferrer">github.com/Magnw27 ↗</a>
+  </footer>
+
+  <audio id="bgAudio" preload="none" loop src="assets/suara.mp3"></audio>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
