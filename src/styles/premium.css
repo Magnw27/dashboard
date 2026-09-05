@@ -78,4 +78,11 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid rgba(
   .hero{padding-top:84px}.hero-title{font-size:clamp(2.95rem,16.5vw,4.5rem)}.hero-actions{display:grid;grid-template-columns:1fr 1fr}.btn{width:100%;padding-inline:10px;font-size:11px}.summary-item{padding:16px 13px}.summary-item strong{font-size:1.8rem}.profile-story p{font-size:13.5px}.fact-row{grid-template-columns:52px minmax(0,1fr) 16px;padding:16px 14px}.fact-row strong{font-size:12.5px}.filter-row{grid-template-columns:1fr 1fr}.filter{font-size:10.5px}.project-card{min-height:220px;padding:16px}.card-main{min-height:130px}
 }
 @media (hover:none){.project-card:hover{transform:none;box-shadow:0 30px 80px rgba(0,0,0,.25)}.project-card:hover::before{opacity:0}.project-card:hover::after{transform:translate3d(-130%,0,0)}.nav-links button:hover{transform:none}.fact-row:hover{background:rgba(9,11,16,.52)}}
+@media (pointer:coarse){
+  .nav-links button,.nav-links a,.nav-tool{min-height:42px}
+  .btn{min-height:48px}
+  .filter{min-height:42px}
+  .search-box{min-height:46px}
+  .project-card{-webkit-tap-highlight-color:transparent}
+}
 @media (prefers-reduced-motion:reduce){.background-layer::after,.energy-beam,.backdrop-image,.nav-tool.is-on .audio-dot,.nav-tool.is-loading .audio-dot{animation:none!important}.project-card::after{display:none}.project-card:hover{transform:none}.text-link span{transition:none}}
