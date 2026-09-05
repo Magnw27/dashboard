@@ -1,1 +1,108 @@
-(() => { const $=s=>document.querySelector(s); const $$=s=>[...document.querySelectorAll(s)]; const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches; if(reduce)return; const canvas=$('#particleCanvas'); if(canvas){const c=canvas.getContext('2d');let w,h,dpr,ps=[];const resize=()=>{w=innerWidth;h=innerHeight;dpr=Math.min(devicePixelRatio||1,1.5);canvas.width=w*dpr;canvas.height=h*dpr;c.setTransform(dpr,0,0,dpr,0,0);ps=Array.from({length:Math.min(65,Math.max(24,Math.floor(w/22)))},()=>({x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.5+.35,vx:(Math.random()-.5)*.18,vy:(Math.random()-.5)*.18,a:Math.random()*.4+.08,t:Math.random()*6.28}));};resize();addEventListener('resize',resize,{passive:true});const draw=()=>{c.clearRect(0,0,w,h);ps.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.t+=.012;if(p.x<0)p.x=w;if(p.x>w)p.x=0;if(p.y<0)p.y=h;if(p.y>h)p.y=0;c.beginPath();c.arc(p.x,p.y,p.r,0,6.283);c.fillStyle=`rgba(255,214,170,${p.a+Math.sin(p.t)*.06})`;c.fill()});requestAnimationFrame(draw)};draw()} const loader=$('#pageLoader'),bar=$('#loaderBar'),pct=$('#loaderPercent');if(loader&&bar){let p=0;const tick=()=>{p+=(100-p)*.08;bar.style.width=p+'%';if(pct)pct.textContent=Math.round(p)+'%';if(p<99.5)requestAnimationFrame(tick);else{bar.style.width='100%';if(pct)pct.textContent='100%';setTimeout(()=>{loader.classList.add('done');document.body.classList.add('page-ready')},350)}};requestAnimationFrame(tick)} const links=$$('#navLinks a[href^="#"]');if(links.length&&'IntersectionObserver'in window){const ob=new IntersectionObserver(es=>es.forEach(e=>{const a=links.find(x=>x.getAttribute('href')==='#'+e.target.id);if(a)a.classList.toggle('is-active',e.isIntersecting)}),{rootMargin:'-35% 0px -55%'});links.map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean).forEach(s=>ob.observe(s))}if(matchMedia('(pointer:fine)').matches){document.addEventListener('pointermove',e=>{const card=e.target.closest('.project-card');if(card){const r=card.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;card.style.setProperty('--rx',(-y*5).toFixed(2)+'deg');card.style.setProperty('--ry',(x*6).toFixed(2)+'deg')}} ,{passive:true});$$('.btn,.nav-tool,.filter').forEach(el=>{el.addEventListener('pointermove',e=>{const r=el.getBoundingClientRect();el.style.transform=`translate(${((e.clientX-r.left)/r.width-.5)*4}px,${((e.clientY-r.top)/r.height-.5)*4}px)`});el.addEventListener('pointerleave',()=>el.style.transform='')})}})();
+(() => {
+  const $ = s => document.querySelector(s);
+  const $$ = s => [...document.querySelectorAll(s)];
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const finePointer = matchMedia('(pointer:fine)').matches;
+  if (reduced) return;
+
+  const root = document.documentElement;
+  let raf = 0;
+  let pointerX = innerWidth * .5;
+  let pointerY = innerHeight * .35;
+  let scrollY = 0;
+
+  const updateScene = () => {
+    raf = 0;
+    const sx = (pointerX / Math.max(innerWidth, 1) - .5);
+    const sy = (pointerY / Math.max(innerHeight, 1) - .5);
+    root.style.setProperty('--scene-x', `${sx.toFixed(4)}`);
+    root.style.setProperty('--scene-y', `${sy.toFixed(4)}`);
+    root.style.setProperty('--scroll-ratio', `${Math.min(scrollY / Math.max(document.documentElement.scrollHeight - innerHeight, 1), 1).toFixed(4)}`);
+
+    const backdrop = $('.backdrop-image');
+    const orbs = $$('.ambient-orbs i');
+    if (backdrop) {
+      backdrop.style.setProperty('--px', `${(sx * 10).toFixed(2)}px`);
+      backdrop.style.setProperty('--py', `${(sy * 7 + Math.min(scrollY * .008, 18)).toFixed(2)}px`);
+    }
+    orbs.forEach((orb, i) => {
+      const depth = (i + 1) * 2.2;
+      orb.style.setProperty('--px', `${(sx * depth).toFixed(2)}px`);
+      orb.style.setProperty('--py', `${(sy * depth).toFixed(2)}px`);
+    });
+  };
+
+  const requestSceneUpdate = () => {
+    if (!raf) raf = requestAnimationFrame(updateScene);
+  };
+
+  if (finePointer) {
+    addEventListener('pointermove', e => {
+      pointerX = e.clientX;
+      pointerY = e.clientY;
+      requestSceneUpdate();
+    }, { passive: true });
+  }
+
+  addEventListener('scroll', () => {
+    scrollY = window.scrollY;
+    requestSceneUpdate();
+  }, { passive: true });
+
+  addEventListener('resize', requestSceneUpdate, { passive: true });
+
+  const magnetic = $$('.btn, .nav-tool, .filter');
+  if (finePointer) {
+    magnetic.forEach(el => {
+      el.addEventListener('pointermove', e => {
+        const r = el.getBoundingClientRect();
+        const x = ((e.clientX - r.left) / r.width - .5) * 5;
+        const y = ((e.clientY - r.top) / r.height - .5) * 5;
+        el.style.setProperty('--mag-x', `${x.toFixed(2)}px`);
+        el.style.setProperty('--mag-y', `${y.toFixed(2)}px`);
+      }, { passive: true });
+      el.addEventListener('pointerleave', () => {
+        el.style.setProperty('--mag-x', '0px');
+        el.style.setProperty('--mag-y', '0px');
+      }, { passive: true });
+    });
+  }
+
+  const countUp = (el, target) => {
+    const start = performance.now();
+    const duration = 850;
+    const step = now => {
+      const p = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = String(Math.round(target * eased));
+      if (p < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  };
+
+  const startCounters = () => {
+    [['#statTotal', Number($('#statTotal')?.textContent || 0)], ['#statLanguages', Number($('#statLanguages')?.textContent || 0)], ['#statOpen', Number($('#statOpen')?.textContent || 0)]].forEach(([selector, target]) => {
+      const el = $(selector);
+      if (el && target > 0) countUp(el, target);
+    });
+  };
+
+  const initObserverRefresh = () => {
+    if (!('IntersectionObserver' in window)) return;
+    const section = $('#projectsContainer');
+    if (!section) return;
+    const observer = new MutationObserver(() => {
+      requestAnimationFrame(() => {
+        $$('#projectsContainer .project-card').forEach((card, i) => card.style.setProperty('--i', i));
+      });
+    });
+    observer.observe(section, { childList: true });
+  };
+
+  document.addEventListener('DOMContentLoaded', () => {
+    requestSceneUpdate();
+    startCounters();
+    initObserverRefresh();
+    document.body.classList.add('motion-ready');
+  });
+})();
