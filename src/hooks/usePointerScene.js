@@ -2,52 +2,78 @@ import { useEffect } from 'react';
 
 export function usePointerScene() {
   useEffect(() => {
-    const fine = window.matchMedia('(pointer:fine)').matches;
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const root = document.documentElement;
-    if (reduced) return undefined;
+    const finePointer = window.matchMedia('(pointer:fine)');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (reducedMotion.matches) return undefined;
 
+    const root = document.documentElement;
     let frame = 0;
+    let active = true;
     let targetX = 0;
     let targetY = 0;
     let currentX = 0;
     let currentY = 0;
-    let running = true;
+    let scrollRatio = 0;
+
+    const updateScrollRatio = () => {
+      const max = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
+      scrollRatio = Math.min(window.scrollY / max, 1);
+    };
 
     const tick = () => {
       frame = 0;
-      currentX += (targetX - currentX) * 0.12;
-      currentY += (targetY - currentY) * 0.12;
+      if (!active) return;
+
+      const nextX = currentX + (targetX - currentX) * 0.12;
+      const nextY = currentY + (targetY - currentY) * 0.12;
+      const settledX = Math.abs(targetX - nextX) < 0.001;
+      const settledY = Math.abs(targetY - nextY) < 0.001;
+
+      currentX = settledX ? targetX : nextX;
+      currentY = settledY ? targetY : nextY;
+
       root.style.setProperty('--pointer-x', currentX.toFixed(4));
       root.style.setProperty('--pointer-y', currentY.toFixed(4));
-      const max = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
-      root.style.setProperty('--scroll-ratio', Math.min(window.scrollY / max, 1).toFixed(4));
-      if (running && (fine || Math.abs(targetX - currentX) > 0.001 || Math.abs(targetY - currentY) > 0.001)) {
-        frame = requestAnimationFrame(tick);
-      }
+      root.style.setProperty('--scroll-ratio', scrollRatio.toFixed(4));
+
+      if (!settledX || !settledY) frame = requestAnimationFrame(tick);
     };
 
-    const schedule = () => { if (!frame) frame = requestAnimationFrame(tick); };
-    const onPointer = event => {
-      if (!fine) return;
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(tick);
+    };
+
+    const onPointerMove = event => {
+      if (!finePointer.matches) return;
       targetX = event.clientX / Math.max(window.innerWidth, 1) - 0.5;
       targetY = event.clientY / Math.max(window.innerHeight, 1) - 0.35;
       schedule();
     };
 
+    const onScroll = () => {
+      updateScrollRatio();
+      schedule();
+    };
+
+    const onResize = () => {
+      updateScrollRatio();
+      schedule();
+    };
+
     root.style.setProperty('--pointer-x', '0');
     root.style.setProperty('--pointer-y', '0');
-    root.style.setProperty('--scroll-ratio', '0');
-    schedule();
-    window.addEventListener('pointermove', onPointer, { passive: true });
-    window.addEventListener('scroll', schedule, { passive: true });
-    window.addEventListener('resize', schedule, { passive: true });
+    updateScrollRatio();
+    root.style.setProperty('--scroll-ratio', scrollRatio.toFixed(4));
+
+    window.addEventListener('pointermove', onPointerMove, { passive: true });
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onResize, { passive: true });
 
     return () => {
-      running = false;
-      window.removeEventListener('pointermove', onPointer);
-      window.removeEventListener('scroll', schedule);
-      window.removeEventListener('resize', schedule);
+      active = false;
+      window.removeEventListener('pointermove', onPointerMove);
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onResize);
       if (frame) cancelAnimationFrame(frame);
     };
   }, []);
