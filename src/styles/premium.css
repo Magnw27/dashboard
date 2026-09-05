@@ -10,7 +10,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid rgba(
 .nav-links button:hover{color:#fff;background:rgba(255,255,255,.06);transform:translateY(-1px)}
 .nav-links button:active{transform:translateY(0) scale(.985)}
 .background-layer::after{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent 0 36%,rgba(255,214,170,.035) 50%,transparent 64%);transform:translate3d(-120%,0,0);animation:ambientSweep 14s var(--ease-premium) infinite;pointer-events:none;will-change:transform}
-.backdrop-image{animation:backdropEnter 2.4s cubic-bezier(.22,1,.36,1) both;will-change:transform,opacity}
+.backdrop-image{animation:backdropEnter 2.4s ease both;will-change:transform,opacity}
 .energy-beam{position:absolute;left:-15%;top:18%;width:130%;height:18vh;background:linear-gradient(90deg,transparent,rgba(255,214,170,.08),rgba(140,170,255,.035),transparent);filter:blur(28px);transform:translate3d(0,0,0) rotate(-8deg);pointer-events:none;will-change:transform,opacity;animation:beamFloatA 12s ease-in-out infinite}
 .beam-b{top:58%;transform:rotate(7deg);filter:blur(34px);animation-name:beamFloatB;animation-duration:16s}
 .vignette{position:absolute;inset:0;background:radial-gradient(circle at center,transparent 44%,rgba(2,3,6,.32) 100%);pointer-events:none}
@@ -44,7 +44,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid rgba(
 .project-card:hover{transform:translateY(-7px);box-shadow:0 38px 100px rgba(0,0,0,.32),0 0 0 1px rgba(255,255,255,.02)}
 .project-card::after{content:"";position:absolute;inset:1px;border-radius:calc(var(--radius) - 1px);background:linear-gradient(120deg,transparent 20%,rgba(255,255,255,.07) 50%,transparent 80%);transform:translate3d(-130%,0,0);transition:transform .9s var(--ease-premium);pointer-events:none;will-change:transform}
 .project-card:hover::after{transform:translate3d(130%,0,0)}
-@keyframes backdropEnter{0%{opacity:0;transform:scale(1.08) translate3d(calc(var(--pointer-x,0)*20px),calc(var(--pointer-y,0)*14px),0)}100%{opacity:1;transform:scale(1.04) translate3d(calc(var(--pointer-x,0)*20px),calc(var(--pointer-y,0)*14px),0)}}
+@keyframes backdropEnter{0%{opacity:0}100%{opacity:1}}
 @keyframes beamFloatA{0%,100%{transform:translate3d(-8%,0,0) rotate(-8deg);opacity:.45}50%{transform:translate3d(10%,0,0) rotate(-8deg);opacity:1}}
 @keyframes beamFloatB{0%,100%{transform:translate3d(8%,0,0) rotate(7deg);opacity:.35}50%{transform:translate3d(-8%,0,0) rotate(7deg);opacity:.85}}
 @keyframes ambientSweep{0%,70%{transform:translate3d(-120%,0,0)}90%,100%{transform:translate3d(120%,0,0)}}
