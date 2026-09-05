@@ -10,8 +10,7 @@ import { Footer } from './components/Footer';
 import { projects } from './data/projects';
 import { usePointerScene } from './hooks/usePointerScene';
 import './styles/app.css';
-
-const EASE = [0.22, 1, 0.36, 1];
+import './styles/premium.css';
 
 export default function App() {
   const [loading, setLoading] = useState(true);
@@ -25,7 +24,8 @@ export default function App() {
     const target = document.getElementById(id);
     if (!target) return;
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const offset = Math.max((document.getElementById('nav')?.getBoundingClientRect().height || 64) + 26, 90);
+    const nav = document.getElementById('nav');
+    const offset = Math.max((nav?.getBoundingClientRect().height || 64) + 24, 88);
     const top = Math.max(target.getBoundingClientRect().top + window.scrollY - offset, 0);
     window.scrollTo({ top, behavior: reduced ? 'auto' : 'smooth' });
   };
@@ -38,16 +38,12 @@ export default function App() {
       const next = Math.min(Math.round(((now - start) / 1100) * 100), 100);
       setProgress(next);
       if (next < 100) raf = requestAnimationFrame(tick);
-      else timeout = window.setTimeout(() => setLoading(false), 400);
+      else timeout = window.setTimeout(() => setLoading(false), 420);
     };
     raf = requestAnimationFrame(tick);
     const onScroll = () => setScrolled(window.scrollY > 24);
     window.addEventListener('scroll', onScroll, { passive: true });
-    return () => {
-      cancelAnimationFrame(raf);
-      clearTimeout(timeout);
-      window.removeEventListener('scroll', onScroll);
-    };
+    return () => { cancelAnimationFrame(raf); clearTimeout(timeout); window.removeEventListener('scroll', onScroll); };
   }, []);
 
   useEffect(() => {
@@ -65,14 +61,13 @@ export default function App() {
     const audio = audioRef.current;
     if (!audio) return;
     audio.volume = 0.62;
-    const onEnded = () => setAudioState('off');
     const onError = () => setAudioState('error');
-    audio.addEventListener('ended', onEnded);
+    const onPause = () => setAudioState(prev => prev === 'error' ? 'error' : 'off');
+    const onPlay = () => setAudioState('on');
     audio.addEventListener('error', onError);
-    return () => {
-      audio.removeEventListener('ended', onEnded);
-      audio.removeEventListener('error', onError);
-    };
+    audio.addEventListener('pause', onPause);
+    audio.addEventListener('play', onPlay);
+    return () => { audio.removeEventListener('error', onError); audio.removeEventListener('pause', onPause); audio.removeEventListener('play', onPlay); };
   }, []);
 
   const toggleAudio = async () => {
@@ -80,12 +75,9 @@ export default function App() {
     if (!audio) return;
     try {
       if (audio.paused) {
-        audio.volume = 0.62;
         await audio.play();
-        setAudioState('on');
       } else {
         audio.pause();
-        setAudioState('off');
       }
     } catch {
       setAudioState('error');
