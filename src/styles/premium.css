@@ -9,9 +9,10 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid rgba(
 .nav-links button{padding:9px 12px;border-radius:10px;color:var(--muted);font-size:13px;transition:color .3s var(--ease-premium),background .3s var(--ease-premium),transform .3s var(--ease-premium)}
 .nav-links button:hover{color:#fff;background:rgba(255,255,255,.06);transform:translateY(-1px)}
 .nav-links button:active{transform:translateY(0) scale(.985)}
-.background-layer::after{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent 0 36%,rgba(255,214,170,.035) 50%,transparent 64%);transform:translateX(-120%);animation:ambientSweep 14s var(--ease-premium) infinite;pointer-events:none;will-change:transform}
-.energy-beam{position:absolute;left:-15%;top:18%;width:130%;height:18vh;background:linear-gradient(90deg,transparent,rgba(255,214,170,.08),rgba(140,170,255,.035),transparent);filter:blur(28px);transform:rotate(-8deg);pointer-events:none;will-change:transform,opacity}
-.beam-b{top:58%;transform:rotate(7deg);filter:blur(34px)}
+.background-layer::after{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent 0 36%,rgba(255,214,170,.035) 50%,transparent 64%);transform:translate3d(-120%,0,0);animation:ambientSweep 14s var(--ease-premium) infinite;pointer-events:none;will-change:transform}
+.backdrop-image{animation:backdropEnter 2.4s cubic-bezier(.22,1,.36,1) both;will-change:transform,opacity}
+.energy-beam{position:absolute;left:-15%;top:18%;width:130%;height:18vh;background:linear-gradient(90deg,transparent,rgba(255,214,170,.08),rgba(140,170,255,.035),transparent);filter:blur(28px);transform:translate3d(0,0,0) rotate(-8deg);pointer-events:none;will-change:transform,opacity;animation:beamFloatA 12s ease-in-out infinite}
+.beam-b{top:58%;transform:rotate(7deg);filter:blur(34px);animation-name:beamFloatB;animation-duration:16s}
 .vignette{position:absolute;inset:0;background:radial-gradient(circle at center,transparent 44%,rgba(2,3,6,.32) 100%);pointer-events:none}
 .profile-section{padding:150px 0 40px}
 .profile-intro{max-width:900px}
@@ -35,13 +36,26 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid rgba(
 .fact-row small{justify-self:end;color:rgba(255,255,255,.22);font:500 10px "Space Grotesk",sans-serif}
 .nav-tool.is-error{border-color:rgba(255,166,120,.42);color:rgba(255,215,195,.92)}
 .nav-tool.is-error .audio-dot{background:#ff9c72;box-shadow:0 0 12px rgba(255,156,114,.55)}
+.nav-tool.is-loading{cursor:wait;opacity:.82}
+.nav-tool.is-loading .audio-dot{animation:audioLoad .85s linear infinite}
+.nav-tool:disabled{pointer-events:none}
 .nav-tool.is-on .audio-dot{animation:audioPulse 1.3s ease-in-out infinite}
 .project-card{transition:transform .55s var(--ease-premium),border-color .35s ease,box-shadow .55s ease,background .35s ease}
 .project-card:hover{transform:translateY(-7px);box-shadow:0 38px 100px rgba(0,0,0,.32),0 0 0 1px rgba(255,255,255,.02)}
-.project-card::after{content:"";position:absolute;inset:1px;border-radius:calc(var(--radius) - 1px);background:linear-gradient(120deg,transparent 20%,rgba(255,255,255,.07) 50%,transparent 80%);transform:translateX(-130%);transition:transform .9s var(--ease-premium);pointer-events:none}
-.project-card:hover::after{transform:translateX(130%)}
-@keyframes ambientSweep{0%,70%{transform:translateX(-120%)}90%,100%{transform:translateX(120%)}}
+.project-card::after{content:"";position:absolute;inset:1px;border-radius:calc(var(--radius) - 1px);background:linear-gradient(120deg,transparent 20%,rgba(255,255,255,.07) 50%,transparent 80%);transform:translate3d(-130%,0,0);transition:transform .9s var(--ease-premium);pointer-events:none;will-change:transform}
+.project-card:hover::after{transform:translate3d(130%,0,0)}
+@keyframes backdropEnter{0%{opacity:0;transform:scale(1.08) translate3d(calc(var(--pointer-x,0)*20px),calc(var(--pointer-y,0)*14px),0)}100%{opacity:1;transform:scale(1.04) translate3d(calc(var(--pointer-x,0)*20px),calc(var(--pointer-y,0)*14px),0)}}
+@keyframes beamFloatA{0%,100%{transform:translate3d(-8%,0,0) rotate(-8deg);opacity:.45}50%{transform:translate3d(10%,0,0) rotate(-8deg);opacity:1}}
+@keyframes beamFloatB{0%,100%{transform:translate3d(8%,0,0) rotate(7deg);opacity:.35}50%{transform:translate3d(-8%,0,0) rotate(7deg);opacity:.85}}
+@keyframes ambientSweep{0%,70%{transform:translate3d(-120%,0,0)}90%,100%{transform:translate3d(120%,0,0)}}
 @keyframes audioPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,214,170,.28)}50%{box-shadow:0 0 0 7px rgba(255,214,170,0)}}
+@keyframes audioLoad{50%{transform:scale(1.45);opacity:.55}}
 @media (max-width:900px){.profile-grid{grid-template-columns:1fr}.profile-section{padding-top:100px}}
-@media (max-width:640px){.profile-section{padding:92px 0 25px}.glass-panel{padding:22px}.profile-intro h2{font-size:clamp(2.5rem,13vw,4rem)}.fact-row{grid-template-columns:66px minmax(0,1fr) 22px;padding:18px}.energy-beam{opacity:.55}.background-layer::after{animation-duration:18s}}
-@media (prefers-reduced-motion:reduce){.background-layer::after,.energy-beam,.nav-tool.is-on .audio-dot{animation:none!important}.project-card::after{display:none}.project-card:hover{transform:none}}
+@media (max-width:640px){
+  .profile-section{padding:92px 0 25px}.glass-panel{padding:22px}.profile-intro h2{font-size:clamp(2.5rem,13vw,4rem)}.fact-row{grid-template-columns:66px minmax(0,1fr) 22px;padding:18px}.energy-beam{opacity:.55}.background-layer::after{animation-duration:18s}
+  .nav{gap:8px}.nav-links{gap:2px}.nav-links button,.nav-links a{padding:8px 7px;font-size:12px}.nav-tool{padding:8px 10px;font-size:11px}.nav-tool .audio-dot{margin-right:5px}
+  .project-card{backdrop-filter:blur(11px) saturate(110%)}.glass-panel{backdrop-filter:blur(12px) saturate(110%)}
+  .noise-layer{animation-duration:2.6s;opacity:.014}
+}
+@media (hover:none){.project-card:hover{transform:none;box-shadow:0 30px 80px rgba(0,0,0,.25)}.project-card:hover::before{opacity:0}.project-card:hover::after{transform:translate3d(-130%,0,0)}.nav-links button:hover{transform:none}.fact-row:hover{background:rgba(9,11,16,.52)}}
+@media (prefers-reduced-motion:reduce){.background-layer::after,.energy-beam,.backdrop-image,.nav-tool.is-on .audio-dot,.nav-tool.is-loading .audio-dot{animation:none!important}.project-card::after{display:none}.project-card:hover{transform:none}.text-link span{transition:none}}
