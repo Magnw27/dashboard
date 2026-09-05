@@ -6,7 +6,7 @@ export function Hero({ onNavigate }) {
   const lines = ['Muhammad', 'Arif', 'Wicaksono'];
 
   return (
-    <section className="hero shell" id="about">
+    <section className="hero shell" id="hero">
       <motion.div className="hero-copy" initial="hidden" animate="show" variants={{ hidden: {}, show: { transition: { staggerChildren: 0.08, delayChildren: 0.55 } } }}>
         <motion.p className="eyebrow" variants={{ hidden: { opacity: 0, y: 20, filter: 'blur(8px)' }, show: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.7, ease } } }}>
           <span /> OPEN SOURCE / PERSONAL WORKSPACE
